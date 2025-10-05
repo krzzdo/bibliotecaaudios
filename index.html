@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Biblioteca de audios</title><!--
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#06b6d4;--muted:#94a3b8}
+    *{box-sizing:border-box;font-family:Inter,system-ui,Arial}
+    body{margin:0;background:linear-gradient(180deg,#071025 0%,#0b1220 100%);color:#e6eef6}
+    header{display:flex;gap:.5rem;padding:1rem;background:rgba(255,255,255,.02);align-items:center}
+    .tabs{display:flex;gap:.4rem}
+    .tab{background:transparent;border:1px solid rgba(255,255,255,.06);padding:.5rem .8rem;border-radius:.5rem;cursor:pointer;color:var(--muted)}
+    .tab.active{background:linear-gradient(90deg,var(--accent),#7dd3fc);color:#042022;border:1px solid rgba(255,255,255,.06);font-weight:600}
+    main{padding:1rem;max-width:1000px;margin:1rem auto}
+    .grid{display:grid;grid-template-columns:1fr;gap:1rem}
+    .card{background:var(--card);padding:1rem;border-radius:.6rem;box-shadow:0 6px 18px rgba(2,6,23,.6)}
+    .audios{display:flex;flex-direction:column;gap:.6rem}
+    .audio-item{display:flex;align-items:center;gap:.6rem;justify-content:space-between;background:rgba(255,255,255,.02);padding:.5rem;border-radius:.45rem}
+    .small{font-size:.85rem;color:var(--muted)}
+    .uploader{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+    input[type=file]{display:inline-block}
+    @media(min-width:700px){ .grid{grid-template-columns:300px 1fr} header{justify-content:center} }
+  </style>-->
+</head>
+<body>
+  <header>
+    <nav class="tabs" role="tablist" aria-label="Categorías">
+      <button class="tab active" data-target="cat-musica" role="tab">Radio 1</button>
+      <button class="tab" data-target="cat-podcasts" role="tab">Radio 2</button>
+      <button class="tab" data-target="cat-notas" role="tab">Radio 3</button>
+      <button class="tab" data-target="cat-otros" role="tab">Radio 4</button>
+      <button class="tab" data-target="cat-otros" role="tab">Radio 5</button>
+    </nav>
+  </header>
+
+  <main>
+    <div class="grid">
+      <aside class="card" id="sidebar">
+        <h3>Categoría activa</h3>
+        <p class="small" id="active-name">Música</p>
+        <div style="height:8px"></div>
+        <div class="uploader">
+          <input id="file-input" type="file" accept="audio/*" multiple />
+          <select id="select-cat" aria-label="Seleccionar categoría">
+            <option value="cat-musica">radio 1</option>
+            <option value="cat-podcasts">radio 2</option>
+            <option value="cat-notas">radio 3</option>
+            <option value="cat-otros">radio 4</option>
+          </select>
+          <button id="add-btn">Añadir</button>
+        </div>
+        <div style="height:10px"></div>
+        <p class="small"></p>
+      </aside>
+
+      <section>
+        <div class="card" id="cat-musica" data-cat>
+          <h3>Region 1</h3>
+          <div class="audios" id="list-cat-musica">
+            <div class="audio-item">
+              <div>
+                <strong>Dia 05/10 12:00/13:00</strong>
+                <div class="small">Radio ADN</div>
+              </div>
+              <audio controls src="audios/musica/tema1.mp3"></audio>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" id="cat-podcasts" data-cat hidden>
+          <h3>Region 2</h3>
+          <div class="audios" id="list-cat-podcasts">
+            <div class="audio-item">
+              <div>
+                <strong>Ejemplo - Podcast 1</strong>
+                <div class="small">Episodio 1</div>
+              </div>
+              <audio controls src="audios/podcasts/ep1.mp3"></audio>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" id="cat-notas" data-cat hidden>
+          <h3>Region 3</h3>
+          <div class="audios" id="list-cat-notas"></div>
+        </div>
+
+        <div class="card" id="cat-otros" data-cat hidden>
+          <h3>Region 4</h3>
+          <div class="audios" id="list-cat-otros"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab');
+    const cats = document.querySelectorAll('[data-cat]');
+    const activeName = document.getElementById('active-name');
+
+    tabs.forEach(t => t.addEventListener('click', () => {
+      tabs.forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      const target = t.dataset.target;
+      cats.forEach(c => {
+        c.id === target ? c.removeAttribute('hidden') : c.setAttribute('hidden','');
+      });
+      activeName.textContent = t.textContent;
+      document.getElementById('select-cat').value = target;
+    }));
+
+    // Añadir audios desde input (no sube al servidor)
+    const fileInput = document.getElementById('file-input');
+    const addBtn = document.getElementById('add-btn');
+    addBtn.addEventListener('click', () => {
+      const files = fileInput.files;
+      if (!files.length) return;
+      const catId = document.getElementById('select-cat').value;
+      const list = document.getElementById('list-' + catId.replace('cat-','cat-'));
+      for (let f of files) {
+        const url = URL.createObjectURL(f);
+        const item = document.createElement('div');
+        item.className = 'audio-item';
+        item.innerHTML = `
+          <div>
+            <strong>${f.name}</strong>
+            <div class="small">${(f.size/1024|0)} KB</div>
+          </div>
+          <audio controls src="${url}"></audio>
+        `;
+        list.appendChild(item);
+      }
+      fileInput.value = '';
+    });
+
+    // Si quieres precargar lista desde un JSON (ejemplo): buscar "audios.json" y renderizar aquí.
+    // (No implementado por defecto; requiere servidor)
+  </script>
+</body>
+</html>
