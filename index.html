@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Biblioteca de audios</title><!--
+  <meta name="BibliotecaAudios"/>
+  <title>Biblioteca de audios</title>
   <style>
     :root{--bg:#0f1724;--card:#0b1220;--accent:#06b6d4;--muted:#94a3b8}
     *{box-sizing:border-box;font-family:Inter,system-ui,Arial}
@@ -18,10 +18,11 @@
     .audios{display:flex;flex-direction:column;gap:.6rem}
     .audio-item{display:flex;align-items:center;gap:.6rem;justify-content:space-between;background:rgba(255,255,255,.02);padding:.5rem;border-radius:.45rem}
     .small{font-size:.85rem;color:var(--muted)}
+    .REGIONSELECCIONADA{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
     .uploader{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
     input[type=file]{display:inline-block}
     @media(min-width:700px){ .grid{grid-template-columns:300px 1fr} header{justify-content:center} }
-  </style>-->
+  </style>
 </head>
 <body>
   <header>
@@ -37,11 +38,11 @@
   <main>
     <div class="grid">
       <aside class="card" id="sidebar">
-        <h3>Categoría activa</h3>
+        <h3>UPLOADER DE ARCHIVOS DE AUDIO</h3>
         <p class="small" id="active-name">Música</p>
         <div style="height:8px"></div>
         <div class="uploader">
-          <input id="file-input" type="file" accept="audio/*" multiple />
+          <input id="file-input" type="file" accept="audio/*" multiple /> <!-- esto debe hacerlo la ia si es posible. -->
           <select id="select-cat" aria-label="Seleccionar categoría">
             <option value="cat-musica">radio 1</option>
             <option value="cat-podcasts">radio 2</option>
@@ -51,9 +52,9 @@
           <button id="add-btn">Añadir</button>
         </div>
         <div style="height:10px"></div>
-        <p class="small"></p>
+        <p class="small"></p> 
       </aside>
-
+<!-- la cantidad de clases en el section sera dependiendo de la cantidad de radios que haya-->
       <section>
         <div class="card" id="cat-musica" data-cat>
           <h3>Region 1</h3>
@@ -91,6 +92,23 @@
           <div class="audios" id="list-cat-otros"></div>
         </div>
       </section>
+
+      <aside class="card" id="sidebar">
+        <h3>CIUDAD ACTIVA DEPENDIENDO DEL USUARIO</h3>
+        <div style="height:8px"></div>
+        <div class="REGIONSELECCIONADA">
+          <!-- esto debe hacerlo la ia si es posible. -->
+          <select id="select-cat" aria-label="Seleccionar categoría">
+            <option value="cat-ciudad1">Concepcion</option>
+            <option value="cat-ciudad2">La Ligua</option>
+            <option value="cat-ciudad3">Osorno</option>
+          </select>
+          <button id="add-btn">Añadir</button>
+        </div>
+        <div style="height:10px"></div>
+        <p class="small"></p> 
+      </aside>
+      
     </div>
   </main>
 
