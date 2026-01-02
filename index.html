@@ -2,113 +2,130 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta name="BibliotecaAudios"/>
-  <title>RADIO LOGGER</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEDIALOGGER</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <nav class="tabs" role="tablist" aria-label="Categorías">
-      <button class="tab active" data-target="Radio1" role="tab">Radio 1</button>
-      <button class="tab" data-target="Radio2" role="tab">Radio 2</button>
-      <button class="tab" data-target="Radio3" role="tab">Radio 3</button>
-      <button class="tab" data-target="Radio4" role="tab">Radio 4</button>
-      <button class="tab" data-target="Radio5" role="tab">Radio 5</button>
-    </nav>
+
+  <header class="top-bar">
+    <div class="logo-area">
+      <img src="imagenes/MEDIALOGGERLOGO.jpg" alt="MediaLogger Logo" class="logo-area"> 
+      <h2>MEDIALOGGER</h2>
+      </div>
+    
+    <div class="user-area">
+      <span class="welcome-text">Hola, </span>
+      <span id="header-username" class="username-highlight">Usuario</span>
+    </div>
   </header>
 
-  <main>
-    <div class="layout">
-      <!-- PANEL IZQUIERDO (siempre visible) -->
-      <aside class="left-panel" id="left-panel">
-        <div class="panel-section" id="uploader-panel">
-          <h3>UPLOADER DE ARCHIVOS DE AUDIO</h3>
-          <p class="small">Categoría activa: <span id="active-name">Radio 1</span></p>
-          <div style="height:8px"></div>
+  <div class="layout">
+    
+    <aside class="sidebar">
+      
+      <div class="filter-section">
+        <label>FILTRAR POR FECHA</label>
+        <input type="date" id="filter-date">
+      </div>
 
-          <div class="uploader">
-            <input id="file-input-u" type="file" accept="audio/*" multiple />
-            <select id="select-cat-u" aria-label="Seleccionar categoría para subir">
-              <option value="Radio1">Radio 1</option>
-              <option value="Radio2">Radio 2</option>
-              <option value="Radio3">Radio 3</option>
-              <option value="Radio4">Radio 4</option>
-              <option value="Radio5">Radio 5</option>
-            </select>
-            <button id="prepare-meta-btn" class="btn btn-ghost">Agregar metadatos</button>
-          </div>
+      <div class="filter-section">
+        <label>SELECCIONAR RADIO</label>
+        <select id="radio-filter-select" class="radio-select">
+          <option value="all">Todas las Radios</option>
+          <option value="Radio 1">Radio 1</option>
+          <option value="Radio 2">Radio 2</option>
+          <option value="Radio 3">Radio 3</option>
+          <option value="Radio 4">Radio 4</option>
+          <option value="Radio 5">Radio 5</option>
+          <option value="RadioPrueba">Radio Prueba</option>
+        </select>
+      </div>
 
-          <!-- formulario para fecha/hora/radio antes de guardar -->
-          <div class="meta-form" id="meta-form">
-            <div class="meta-row">
-              <label for="meta-fecha" class="small">Fecha</label>
-              <input id="meta-fecha" type="date">
-            </div>
-            <div class="meta-row">
-              <label class="small">Inicio</label>
-              <input id="meta-start" type="time">
-              <label class="small">Fin</label>
-              <input id="meta-end" type="time">
-            </div>
-            <div class="meta-row">
-              <label class="small">Radio</label>
-              <select id="meta-radio">
-                <option value="Radio 1">Radio 1</option>
-                <option value="Radio 2">Radio 2</option>
-                <option value="Radio 3">Radio 3</option>
-                <option value="Radio 4">Radio 4</option>
-                <option value="Radio 5">Radio 5</option>
-              </select>
-            </div>
-            <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:.4rem">
-              <button id="cancel-meta" class="btn btn-ghost">Cancelar</button>
-              <button id="save-meta" class="btn btn-primary">Guardar audios</button>
-            </div>
-          </div>
-        </div>
+      <div style="margin-top: 3rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+           <button id="toggle-uploader" class="btn-ghost">⬆ Subir Manualmente</button>
+      </div>
 
-        <div class="panel-section" id="fecha-panel">
-          <h3 id="fecha-title">Fecha: </h3>
-          <div style="height:8px"></div>
-          <div class="FECHASELECCIONADA">
-            <input type="date" id="input-fecha"/>
-            <button id="btn-guardar-fecha" class="btn btn-primary">Aplicar</button>
-            <button id="btn-clear-fecha" class="btn btn-ghost">Mostrar todas</button>
-          </div>
-          <div style="height:10px"></div>
-          <p class="small">Fecha seleccionada: <span id="fecha-activa">--</span></p>
-        </div>
-      </aside>
+      <div id="uploader-area" style="display:none; margin-top:10px;">
+          <input id="file-input-u" type="file" accept="audio/*" multiple />
+          <button id="save-manual" class="btn-primary">Guardar</button>
+      </div>
+    </aside>
 
-      <!-- CONTENIDO PRINCIPAL (secciones por radio) -->
-      <section id="main-content">
-        <div class="card" id="Radio1" data-cat>
-          <img src="imagenes/LOGO-MICASINO-PNG.png.webp" class="imagen-card" alt="logo">
-          <div class="audios" id="list-Radio1"></div>
-        </div>
+    <section class="main-feed">
+      <h2 class="feed-title">Últimos audios recibidos</h2>
+      <div id="feed-container">
+         <p style="color:var(--muted)">Cargando audios...</p>
+      </div>
+    </section>
 
-        <div class="card" id="Radio2" data-cat hidden>
-          <img src="imagenes/LOGO-MICASINO-PNG.png.webp" class="imagen-card" alt="logo">
-          <div class="audios" id="list-Radio2"></div>
-        </div>
+  </div>
 
-        <div class="card" id="Radio3" data-cat hidden>
-          <img src="imagenes/LOGO-MICASINO-PNG.png.webp" class="imagen-card" alt="logo">
-          <div class="audios" id="list-Radio3"></div>
-        </div>
+<script src="main.js"></script>
+</body>
+</html><!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEDIALOGGER</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-        <div class="card" id="Radio4" data-cat hidden>
-          <img src="imagenes/LOGO-MICASINO-PNG.png.webp" class="imagen-card" alt="logo">
-          <div class="audios" id="list-Radio4"></div>
-        </div>
-
-        <div class="card" id="Radio5" data-cat hidden>
-          <img src="imagenes/LOGO-MICASINO-PNG.png.webp" class="imagen-card" alt="logo">
-          <div class="audios" id="list-Radio5"></div>
-        </div>
-      </section>
+  <header class="top-bar">
+    <div class="logo-area">
+      <img src="imagenes/MEDIALOGGERLOGO.jpg" alt="MediaLogger Logo" class="logo-area"> 
+      <h2>MEDIALOGGER</h2>
+      </div>
+    
+    <div class="user-area">
+      <span class="welcome-text">Hola, </span>
+      <span id="header-username" class="username-highlight">Usuario</span>
     </div>
-  </main>
+  </header>
+
+  <div class="layout">
+    
+    <aside class="sidebar">
+      
+      <div class="filter-section">
+        <label>FILTRAR POR FECHA</label>
+        <input type="date" id="filter-date">
+      </div>
+
+      <div class="filter-section">
+        <label>SELECCIONAR RADIO</label>
+        <select id="radio-filter-select" class="radio-select">
+          <option value="all">Todas las Radios</option>
+          <option value="Radio 1">Radio 1</option>
+          <option value="Radio 2">Radio 2</option>
+          <option value="Radio 3">Radio 3</option>
+          <option value="Radio 4">Radio 4</option>
+          <option value="Radio 5">Radio 5</option>
+          <option value="RadioPrueba">Radio Prueba</option>
+        </select>
+      </div>
+
+      <div style="margin-top: 3rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+           <button id="toggle-uploader" class="btn-ghost">⬆ Subir Manualmente</button>
+      </div>
+
+      <div id="uploader-area" style="display:none; margin-top:10px;">
+          <input id="file-input-u" type="file" accept="audio/*" multiple />
+          <button id="save-manual" class="btn-primary">Guardar</button>
+      </div>
+    </aside>
+
+    <section class="main-feed">
+      <h2 class="feed-title">Últimos audios recibidos</h2>
+      <div id="feed-container">
+         <p style="color:var(--muted)">Cargando audios...</p>
+      </div>
+    </section>
+
+  </div>
+
 <script src="main.js"></script>
 </body>
 </html>
