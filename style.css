@@ -1,75 +1,182 @@
 /* =========================================
-   1. VARIABLES Y RESET GLOBAL
+   VARIABLES GLOBALES
    ========================================= */
 :root {
   --bg: #0f1724;
   --card: #0b1220;
   --accent: #06b6d4;
   --muted: #94a3b8;
-  --header-h: 70px; /* Altura de la barra superior */
+  --header-h: 70px;
+
+  /* SOLO LOGIN */
+  --dark-blue: #042022;
+  --input-border: rgba(255, 255, 255, 0.3);
 }
 
+/* =========================================
+   RESET BÁSICO
+   ========================================= */
 * {
   box-sizing: border-box;
   font-family: 'Inter', system-ui, Arial, sans-serif;
 }
 
+/* =========================================
+   BODY GLOBAL (DASHBOARD)
+   ========================================= */
 body {
   margin: 0;
   height: 100vh;
   background: linear-gradient(180deg, #071025 0%, #0b1220 100%);
   color: #e6eef6;
-  /* Configuración por defecto para la App (Dashboard) */
-  overflow: hidden; 
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
 /* =========================================
-   2. ESTILOS ESPECÍFICOS DEL LOGIN
-   (Añade la clase <body class="login-page"> al HTML del login)
+   LOGIN (MISMO DISEÑO FOTO 1)
    ========================================= */
 body.login-page {
-/* Ocupa toda la pantalla visible exactamente */
-    height: 100vh; 
-    width: 100%;
-
-    /* Centrado */
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
+/* Card login */
 .login-container {
   background: var(--card);
   padding: 2.5rem;
   border-radius: 0.75rem;
   box-shadow: 0 6px 18px rgba(2, 6, 23, 0.6);
-  width: 330px;
+  width: 360px;
   text-align: center;
   border: 1px solid rgba(255, 255, 255, 0.06);
-  /* Asegura centrado si no se usa la clase login-page */
-  margin: auto; 
+  position: relative;
+}
+
+/* Icono superior */
+.user-icon-container {
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 100px;
+  background-color: var(--card);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4px solid var(--bg);
+}
+
+.user-icon-container i {
+  font-size: 3.5rem;
+  color: var(--accent);
 }
 
 .login-container h2 {
-  margin-bottom: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
   color: var(--accent);
   font-weight: 600;
   font-size: 1.5rem;
 }
 
+/* Inputs con iconos */
+.input-group {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.input-group i {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+}
+
+body.login-page .input-group input {
+  width: 100%;
+  padding: 0.8rem 0.8rem 0.8rem 2.5rem;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--input-border);
+  border-radius: 0;
+  color: #e6eef6;
+  outline: none;
+  font-size: 1rem;
+  box-shadow: none;
+}
+
+body.login-page .input-group input:focus {
+  border-bottom-color: var(--accent);
+}
+
+body.login-page .input-group input::placeholder {
+  color: var(--muted);
+}
+
+/* Fila inferior */
+.bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+}
+
+.remember-me input {
+  margin-right: 0.5rem;
+  accent-color: var(--accent);
+}
+
+.forgot-password {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.forgot-password:hover {
+  color: var(--accent);
+}
+
+/* Botón login */
+body.login-page button {
+  width: 100%;
+  padding: 0.8rem;
+  background: var(--accent);
+  color: var(--dark-blue);
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background 0.3s ease;
+}
+
+body.login-page button:hover {
+  background: #20d0eb;
+}
+
 #error {
-  margin-top: 0.75rem;
+  margin-top: 1rem;
   color: #ff7b7b;
   font-size: 0.9rem;
 }
 
 /* =========================================
-   3. LAYOUT DEL DASHBOARD (HEADER + SIDEBAR + CONTENT)
+   DASHBOARD (HEADER + LAYOUT)
    ========================================= */
-
-/* --- TOP BAR (Header) --- */
 .top-bar {
   height: var(--header-h);
   background: rgba(11, 18, 32, 0.95);
@@ -80,10 +187,9 @@ body.login-page {
   padding: 0 1.5rem;
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   z-index: 100;
-  flex-shrink: 0; /* Evita que el header se encoja */
+  flex-shrink: 0;
 }
 
-/* Estilos del Logo (Integrados con tu petición anterior) */
 .logo-area {
   height: 100%;
   display: flex;
@@ -93,100 +199,53 @@ body.login-page {
 }
 
 .logo-img {
-  height: 40px; /* Control de altura de imagen */
+  height: 40px;
   width: auto;
-  object-fit: contain;
 }
 
 .logo-area h2 {
   margin: 0;
   font-size: 1.5rem;
-  color: #fff; /* Texto blanco para contraste en header oscuro */
+  color: #fff;
   font-weight: 700;
-  letter-spacing: -0.5px;
 }
 
 .user-area {
   font-size: 1rem;
   color: var(--muted);
 }
+
 .username-highlight {
   color: var(--accent);
   font-weight: bold;
   margin-left: 5px;
-  text-transform: capitalize;
 }
 
-/* --- GRID PRINCIPAL --- */
+/* Layout principal */
 .layout {
   display: grid;
-  grid-template-columns: 280px 1fr; 
-  height: calc(100vh - var(--header-h)); /* Resta la altura del header */
+  grid-template-columns: 280px 1fr;
+  height: calc(100vh - var(--header-h));
   width: 100%;
 }
 
-/* --- SIDEBAR (Izquierda) --- */
+/* Sidebar */
 .sidebar {
   background: rgba(255,255,255,0.01);
   border-right: 1px solid rgba(255,255,255,0.06);
   padding: 1.5rem;
-  overflow-y: auto; /* Scroll independiente */
+  overflow-y: auto;
 }
 
-.filter-section {
-  margin-bottom: 2rem;
-}
-
-.filter-section label {
-  display: block;
-  color: var(--muted);
-  font-size: 0.85rem;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-  letter-spacing: 0.5px;
-}
-
-/* Select personalizado */
-.radio-select {
-  width: 100%;
-  padding: 0.75rem;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
-  color: #fff;
-  font-size: 1rem;
-  cursor: pointer;
-  outline: none;
-}
-.radio-select:focus {
-  border-color: var(--accent);
-}
-.radio-select option {
-  background: var(--card);
-  color: #fff;
-}
-
-/* --- FEED PRINCIPAL (Derecha) --- */
+/* Feed */
 .main-feed {
   padding: 2rem;
-  overflow-y: auto; /* Scroll independiente para el contenido */
-}
-
-.feed-title {
-  color: #e6eef6;
-  border-bottom: 1px solid var(--accent);
-  display: inline-block;
-  padding-bottom: 5px;
-  margin-bottom: 20px;
-  font-size: 1.2rem;
-  font-weight: 600;
+  overflow-y: auto;
 }
 
 /* =========================================
-   4. COMPONENTES (Inputs, Cards, Audio, Botones)
+   COMPONENTES GLOBALES (NO LOGIN)
    ========================================= */
-
-/* Inputs Generales (Login + Dashboard) */
 input[type="text"],
 input[type="password"],
 input[type="date"],
@@ -207,46 +266,6 @@ input:focus {
   box-shadow: 0 0 5px var(--accent);
 }
 
-/* Tarjetas de Audio */
-.audio-card {
-  background: var(--card);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 0.75rem;
-  padding: 1.2rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
-
-.card-row {
-  color: var(--muted);
-  font-size: 0.95rem;
-  font-family: monospace;
-}
-.card-row strong {
-  color: #fff;
-  font-family: 'Inter', sans-serif;
-  text-transform: uppercase;
-  margin-right: 8px;
-  font-size: 0.85rem;
-  opacity: 0.8;
-}
-
-/* Reproductor de Audio */
-audio {
-  width: 100%;
-  height: 35px;
-  margin-top: 5px;
-  border-radius: 20px;
-}
-/* Forzar color claro en controles de Chrome/Webkit */
-audio::-webkit-media-controls-panel {
-  background-color: #e6eef6;
-}
-
-/* Botones */
 button,
 .btn-primary {
   width: 100%;
@@ -259,8 +278,6 @@ button,
   cursor: pointer;
   font-weight: 600;
   font-size: 1rem;
-  transition: background 0.3s ease;
-  text-align: center;
 }
 
 button:hover,
@@ -268,37 +285,21 @@ button:hover,
   background: #20d0eb;
 }
 
-.btn-ghost {
-  width: 100%;
-  padding: 0.6rem;
-  background: transparent;
-  border: 1px dashed rgba(255,255,255,.2);
-  color: var(--muted);
-  cursor: pointer;
-  border-radius: 0.5rem;
-  transition: all 0.2s;
-}
-
-.btn-ghost:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-/* --- RESPONSIVE --- */
-@media(max-width: 900px) {
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+@media (max-width: 900px) {
   .layout {
-    grid-template-columns: 1fr; /* Una sola columna en móviles */
+    grid-template-columns: 1fr;
     height: auto;
-    overflow: visible;
   }
-  
+
   .sidebar {
-    height: auto;
     border-right: none;
     border-bottom: 1px solid rgba(255,255,255,0.06);
   }
 
   body {
-    overflow-y: auto; /* Permitir scroll en móviles */
+    overflow-y: auto;
   }
 }
