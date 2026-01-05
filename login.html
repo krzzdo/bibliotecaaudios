@@ -3,163 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Acceso a RadioLogger</title>
+  <title>Acceso a MediaLogger</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
-  <style>
-    /* =========================================
-       ESTILOS ESPECÍFICOS DEL LOGIN (Basados en tu paleta original)
-       ========================================= */
-    :root {
-      --bg: #0f1724;
-      --card: #0b1220;
-      --accent: #06b6d4;
-      --muted: #94a3b8;
-      --dark-blue: #042022; /* Color oscuro del botón original para contraste */
-      --input-border: rgba(255, 255, 255, 0.3); /* Borde más sutil para los inputs */
-    }
 
-    body.login-page {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(180deg, #071025 0%, #0b1220 100%);
-      font-family: 'Inter', system-ui, Arial, sans-serif;
-      color: #e6eef6;
-    }
-
-    .login-container {
-      background: var(--card);
-      padding: 2.5rem;
-      border-radius: 0.75rem;
-      box-shadow: 0 6px 18px rgba(2, 6, 23, 0.6);
-      width: 360px; /* Un poco más ancho para el diseño */
-      text-align: center;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      position: relative; /* Para posicionar el icono superior */
-    }
-
-    /* Icono Superior */
-    .user-icon-container {
-      position: absolute;
-      top: -50px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100px;
-      height: 100px;
-      background-color: var(--card);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 4px solid var(--bg); /* Borde del color de fondo para separar */
-    }
-
-    .user-icon-container i {
-      font-size: 3.5rem;
-      color: var(--accent);
-    }
-
-    .login-container h2 {
-      margin-top: 2rem;
-      margin-bottom: 2rem;
-      color: var(--accent);
-      font-weight: 600;
-      font-size: 1.5rem;
-    }
-
-    /* Grupos de Input con Icono */
-    .input-group {
-      position: relative;
-      margin-bottom: 1.5rem;
-    }
-
-    .input-group i {
-      position: absolute;
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--muted);
-    }
-
-    .input-group input {
-      width: 100%;
-      padding: 0.8rem 0.8rem 0.8rem 2.5rem; /* Espacio para el icono */
-      background: transparent; /* Fondo transparente */
-      border: none;
-      border-bottom: 1px solid var(--input-border); /* Solo borde inferior */
-      border-radius: 0;
-      color: #e6eef6;
-      outline: none;
-      font-size: 1rem;
-      transition: border-color 0.3s;
-    }
-
-    .input-group input:focus {
-      border-bottom-color: var(--accent);
-    }
-    
-    .input-group input::placeholder {
-      color: var(--muted);
-    }
-
-    /* Fila inferior (Checkbox y Enlace) */
-    .bottom-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-
-    .remember-me {
-      display: flex;
-      align-items: center;
-    }
-
-    .remember-me input {
-      margin-right: 0.5rem;
-      accent-color: var(--accent); /* Color del checkbox */
-    }
-
-    .forgot-password {
-      color: var(--muted);
-      text-decoration: none;
-      transition: color 0.3s;
-    }
-
-    .forgot-password:hover {
-      color: var(--accent);
-    }
-
-    /* Botón */
-    button {
-      width: 100%;
-      padding: 0.8rem;
-      background: var(--accent);
-      color: var(--dark-blue);
-      border: none;
-      border-radius: 0.5rem;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 1rem;
-      transition: background 0.3s ease;
-    }
-
-    button:hover {
-      background: #20d0eb;
-    }
-
-    /* Error */
-    #error {
-      margin-top: 1rem;
-      color: #ff7b7b;
-      font-size: 0.9rem;
-    }
-  </style>
 </head>
 <body class="login-page">
   <div class="login-container">
@@ -167,26 +14,19 @@
       <i class="fa-regular fa-user"></i>
     </div>
     
-    <h2>Acceso a RadioLogger</h2>
+    <h2>Acceso a MediaLogger</h2>
     
     <form id="loginForm">
       <div class="input-group">
         <i class="fa-solid fa-envelope"></i>
-        <input type="text" id="user" placeholder="Email ID" required>
+        <input type="text" id="user" placeholder="Usuario" required>
       </div>
       <div class="input-group">
         <i class="fa-solid fa-lock"></i>
-        <input type="password" id="pass" placeholder="Password" required>
+        <input type="password" id="pass" placeholder="Contraseña" required>
       </div>
       
-      <div class="bottom-row">
-        <label class="remember-me">
-          <input type="checkbox"> Remember me
-        </label>
-        <a href="#" class="forgot-password">Forgot Password?</a>
-      </div>
-      
-      <button type="submit">LOGIN</button>
+      <button type="submit">ENTRAR</button>
       <div id="error"></div>
     </form>
   </div>
