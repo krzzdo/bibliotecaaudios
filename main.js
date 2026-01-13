@@ -1,179 +1,169 @@
-// --- Obtener usuario ---
+// main.js - VERSIÓN CORRECTA PARA DROPDOWN Y BARRA SUPERIOR
+
+// --- 1. CONFIGURACIÓN DE USUARIO (Esto arregla el nombre arriba) ---
 const params = new URLSearchParams(window.location.search);
 const user = params.get("user");
-if (!user) window.location.href = "/";
-document.title = `Biblioteca de audios - ${user}`;
+const headerUsername = document.getElementById("header-username");
 
-/* ---------- Helpers ---------- */
-function formatDateDisplay(isoDate){
-  if(!isoDate) return '--';
-  try {
-    const d = new Date(isoDate + 'T00:00:00');
-    return d.toLocaleDateString();
-  } catch(e){ return isoDate; }
+// Si hay usuario en la URL, lo ponemos en el título y en la barra
+if (user) {
+    document.title = `MediaLogger - ${user}`;
+    if (headerUsername) headerUsername.textContent = user;
+} else {
+    // Si no hay usuario, redirigir al login (opcional)
+    window.location.href = "/";
 }
 
-/* ---------- UI Referencias ---------- */
-const tabs = document.querySelectorAll('.tab');
-const cats = document.querySelectorAll('[data-cat]');
-const activeNameSpan = document.getElementById('active-name');
+// --- 2. CONFIGURACIÓN DE ESTADO ---
+let audios = []; 
+let filterRadio = 'all'; 
+let filterDate = null;   
+
+// --- 3. REFERENCIAS DEL HTML (Elementos nuevos) ---
+const feedContainer = document.getElementById('feed-container');
+const dateInput = document.getElementById('filter-date');
+const radioSelect = document.getElementById('radio-filter-select'); // El menú de las 33 radios
+
+// Uploader manual
+const uploaderArea = document.getElementById('uploader-area');
+const toggleUploaderBtn = document.getElementById('toggle-uploader');
 const fileInput = document.getElementById('file-input-u');
-const prepareMetaBtn = document.getElementById('prepare-meta-btn');
-const metaForm = document.getElementById('meta-form');
-const saveMeta = document.getElementById('save-meta');
-const cancelMeta = document.getElementById('cancel-meta');
-// Inputs del formulario
-const metaFecha = document.getElementById('meta-fecha');
-const metaStart = document.getElementById('meta-start');
-const metaEnd = document.getElementById('meta-end');
-const metaRadio = document.getElementById('meta-radio');
+const saveManualBtn = document.getElementById('save-manual');
 
-/* ---------- Estado Global ---------- */
-let audios = []; // Se llena desde el servidor
-let filterFecha = null;
-
-/* ---------- 1. Cargar datos del Servidor ---------- */
-async function loadAudiosFromServer() {
+// --- 4. CARGAR DATOS DEL SERVIDOR ---
+async function loadAudios() {
   try {
-    const res = await fetch('/api/audios'); // Pide la lista al server
-    const data = await res.json();
-    audios = data; // Guarda en memoria
-    renderAll();   // Dibuja en pantalla
-  } catch (error) {
-    console.error("Error cargando audios:", error);
+    const res = await fetch('/api/audios');
+    audios = await res.json();
+    renderFeed();
+  } catch (e) { 
+    console.error(e);
+    if(feedContainer) feedContainer.innerHTML = '<p style="color:var(--muted)">No se pudo conectar al servidor.</p>';
   }
 }
 
-/* ---------- 2. Renderizado (Mostrar audios) ---------- */
-function renderAll(){
-  // Limpiar listas
-  const lists = {
-    Radio1: document.getElementById('list-Radio1'),
-    Radio2: document.getElementById('list-Radio2'),
-    Radio3: document.getElementById('list-Radio3'),
-    Radio4: document.getElementById('list-Radio4'),
-    Radio5: document.getElementById('list-Radio5'),
-  };
-  Object.values(lists).forEach(l=> l && (l.innerHTML = ''));
+// --- 5. RENDERIZAR (DIBUJAR LA LISTA) ---
+function renderFeed() {
+  if(!feedContainer) return;
+  feedContainer.innerHTML = '';
 
-  // Filtrar
-  const filtered = audios.filter(a => {
-    if(!filterFecha) return true;
-    return a.date === filterFecha;
+  // Filtrado
+  let displayedAudios = audios.filter(item => {
+    // A) Filtro de fecha
+    if (filterDate && item.date !== filterDate) return false;
+    
+    // B) Filtro de radio (Usando el valor del SELECT)
+    if (filterRadio !== 'all') {
+      // Normalizamos para evitar errores de espacios (Radio 1 vs Radio1)
+      const r1 = item.radio.replace(/\s+/g, '').toLowerCase().trim();
+      const r2 = filterRadio.replace(/\s+/g, '').toLowerCase().trim();
+      // Verificamos si coinciden (o si uno contiene al otro para ser más flexible)
+      if (!r1.includes(r2) && !r2.includes(r1)) return false;
+    }
+    return true;
   });
 
-  // Agrupar por Radio
-  const byRadio = {};
-  for(const a of filtered){
-    const radioKey = a.radio.replace(/\s+/g,''); // "Radio 1" -> "Radio1"
-    if(!byRadio[radioKey]) byRadio[radioKey]=[];
-    byRadio[radioKey].push(a);
+  // Ordenar (Más recientes primero)
+  displayedAudios.sort((a, b) => {
+    const timeA = (a.date || '') + (a.start || '');
+    const timeB = (b.date || '') + (b.start || '');
+    return timeB.localeCompare(timeA);
+  });
+
+  // Mensaje si no hay nada
+  if(displayedAudios.length === 0) {
+    feedContainer.innerHTML = '<p style="color:var(--muted); font-style:italic;">No hay audios para mostrar con estos filtros.</p>';
+    return;
   }
 
-  // Crear HTML
-  for(const key in byRadio){
-    // Ordenar por hora de inicio
-    byRadio[key].sort((x,y) => (x.start || '').localeCompare(y.start || ''));
-    
-    const listEl = lists[key];
-    if(!listEl) continue;
-
-    for(const item of byRadio[key]){
-      const node = document.createElement('div');
-      node.className = 'audio-item';
-      node.innerHTML = `
-        <div>
-          <strong>${item.start} / ${item.end}</strong>
-          <div class="small">${item.radio}</div>
-          <div class="small">Fecha: ${formatDateDisplay(item.date)}</div>
-          <div class="small">${item.name}</div>
-        </div>
-        <audio controls src="${item.url}" preload="none"></audio>
-      `;
-      listEl.appendChild(node);
-    }
-  }
+  // Dibujar cada tarjeta
+  displayedAudios.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'audio-card'; // Usa el estilo de caja oscura
+    card.innerHTML = `
+      <div class="card-row">
+        <strong>HORARIO:</strong> ${item.start} - ${item.end}
+      </div>
+      <div class="card-row">
+        <strong>RADIO:</strong> ${item.radio}
+      </div>
+      <div class="card-row">
+        <strong>FECHA:</strong> ${formatDateDisplay(item.date)}
+      </div>
+      <div class="card-row" style="color:#fff; font-size:0.8rem; margin-top:5px;">
+        ${item.name}
+      </div>
+      <audio controls src="${item.url}" preload="none"></audio>
+    `;
+    feedContainer.appendChild(card);
+  });
 }
 
-/* ---------- 3. Subir Audio (Manual) ---------- */
-saveMeta.addEventListener('click', async () => {
-  const files = fileInput.files;
-  if(!files.length) return;
-
-  const fecha = metaFecha.value;
-  const start = metaStart.value;
-  const end = metaEnd.value;
-  const radio = metaRadio.value;
-
-  if(!fecha) { alert('Falta la fecha'); return; }
-
-  // Subir archivo por archivo
-  for(const file of files){
-    const formData = new FormData();
-    formData.append('audio', file);
-    formData.append('radio', radio);
-    formData.append('fecha', fecha);
-    formData.append('start', start);
-    formData.append('end', end);
-    formData.append('name', file.name);
-
+// Helper para fecha bonita
+function formatDateDisplay(isoDate){
+    if(!isoDate) return '--';
     try {
-      const res = await fetch('/upload', {
-        method: 'POST',
-        body: formData
-      });
-      const result = await res.json();
-      if(result.ok){
-        console.log("Subido OK");
-      }
-    } catch(err){
-      console.error(err);
-      alert("Error subiendo archivo");
-    }
-  }
+      const [y, m, d] = isoDate.split('-');
+      const dateObj = new Date(y, m - 1, d); 
+      return dateObj.toLocaleDateString();
+    } catch(e){ return isoDate; }
+}
 
-  // Reset y recargar
-  metaForm.style.display = 'none';
-  fileInput.value = '';
-  await loadAudiosFromServer(); // Recargar lista para ver el nuevo
-});
+// --- 6. EVENTOS (INTERACCIÓN) ---
 
-/* ---------- Tabs & UI Logic (Igual que antes) ---------- */
-tabs.forEach(t => t.addEventListener('click', () => {
-  tabs.forEach(x=>x.classList.remove('active'));
-  t.classList.add('active');
-  const target = t.dataset.target;
-  cats.forEach(c => c.id === target ? c.removeAttribute('hidden') : c.setAttribute('hidden',''));
-  activeNameSpan.textContent = t.textContent;
-  if(metaRadio) metaRadio.value = t.textContent;
-}));
+// Cambio de Fecha
+if(dateInput) {
+    dateInput.addEventListener('change', (e) => {
+      filterDate = e.target.value || null;
+      renderFeed();
+    });
+}
 
-prepareMetaBtn.addEventListener('click', () => {
-  if(!fileInput.files.length) return alert('Selecciona archivos primero');
-  metaFecha.value = new Date().toISOString().split('T')[0];
-  metaForm.style.display = 'flex';
-});
-cancelMeta.addEventListener('click', () => metaForm.style.display = 'none');
+// Cambio de Radio (EL MENU DESPLEGABLE)
+if(radioSelect) {
+    radioSelect.addEventListener('change', (e) => {
+        filterRadio = e.target.value; // Toma el valor del <option> seleccionado
+        renderFeed();
+    });
+}
 
-// Filtro de Fecha
-const inputFecha = document.getElementById('input-fecha');
-const btnGuardarFecha = document.getElementById('btn-guardar-fecha');
-const btnClearFecha = document.getElementById('btn-clear-fecha');
-const fechaActivaSpan = document.getElementById('fecha-activa');
+// Mostrar/Ocultar Uploader
+if(toggleUploaderBtn) {
+    toggleUploaderBtn.addEventListener('click', () => {
+      uploaderArea.style.display = uploaderArea.style.display === 'none' ? 'block' : 'none';
+    });
+}
 
-btnGuardarFecha.addEventListener('click', () => {
-  filterFecha = inputFecha.value || null;
-  fechaActivaSpan.textContent = filterFecha ? formatDateDisplay(filterFecha) : '--';
-  renderAll();
-});
-btnClearFecha.addEventListener('click', () => {
-  inputFecha.value = '';
-  filterFecha = null;
-  fechaActivaSpan.textContent = '--';
-  renderAll();
-});
+// Guardar Manualmente
+if(saveManualBtn) {
+    saveManualBtn.addEventListener('click', async () => {
+        const files = fileInput.files;
+        if(!files.length) return alert("Selecciona un archivo");
+        
+        // Si está en "Todas las Radios", guardamos como "Radio General", si no, la que esté seleccionada
+        const radioDestino = filterRadio === 'all' ? 'Radio General' : filterRadio;
+        const today = new Date().toISOString().split('T')[0];
+        const timeNow = new Date().toLocaleTimeString('es-CL', {hour:'2-digit', minute:'2-digit'});
 
-/* ---------- Init ---------- */
+        for(const f of files){
+            const formData = new FormData();
+            formData.append('audio', f);
+            formData.append('radio', radioDestino);
+            formData.append('fecha', today);
+            formData.append('start', timeNow);
+            
+            try {
+                await fetch('/upload', { method: 'POST', body: formData });
+            } catch(e) { console.error(e); }
+        }
+        
+        fileInput.value = '';
+        alert("Audio subido. Actualizando lista...");
+        loadAudios();
+    });
+}
+
+// --- 7. INICIAR ---
 (function init(){
-    loadAudiosFromServer();
+    loadAudios();
 })();
