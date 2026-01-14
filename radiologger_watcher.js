@@ -83,12 +83,12 @@ async function procesarYSubir(filePath) {
 
     // --- PASO C: PREPARAR ENVÍO ---
     const form = new FormData();
-    form.append('audio', fs.createReadStream(filePath));
     form.append('radio', radioName); // ¡Aquí va el nombre de la carpeta!
     form.append('fecha', fechaStr);
     form.append('start', horaStart);
     form.append('end', horaEnd);
     form.append('name', fileName);
+    form.append('audio', fs.createReadStream(filePath));
 
     // --- PASO D: ENVIAR AL SERVIDOR ---
     console.log(`   📤 Subiendo a la lista de: ${radioName}...`);
