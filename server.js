@@ -18,13 +18,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // --- Helpers para la "Base de Datos" (db.json) ---
-// Lee la lista de audios
 function readDB() {
   if (!fs.existsSync(DB_FILE)) return [];
   const data = fs.readFileSync(DB_FILE, "utf-8");
   return JSON.parse(data || "[]");
 }
-// Guarda un nuevo audio en la lista
+
 function saveToDB(entry) {
   const current = readDB();
   current.push(entry);
@@ -32,9 +31,12 @@ function saveToDB(entry) {
 }
 
 // ---------------- LOGIN ----------------
+// Aquí están tus usuarios reales
 const usuarios = {
   "cliente1": { pass: "1234" },
-  "cliente2": { pass: "abcd" }
+  "cliente2": { pass: "abcd" },
+  "MiCasino": { pass: "Mi26Casinologger."},
+  "ClienteDemo": { pass: "radio2026" } // Tu perfil de pruebas
 };
 
 app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "login.html")));
@@ -49,54 +51,72 @@ app.get("/panel", (req, res) => res.sendFile(path.join(__dirname, "public", "ind
 
 // ---------------- API DE AUDIOS ----------------
 
-// 1. Configuración de Multer (Donde se guardan los archivos físicos)
+// 1. Configuración de Multer (Almacenamiento físico)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    // Si viene de RadioLogger, intentar sacar info del body, si no, genérico
-    const radio = req.body.radio || "RadioGenerica";
-    const dir = path.join(__dirname, "public", "audios", radio);
+    // IMPORTANTE: Obtenemos el nombre de la radio que envía el Watcher
+    // Si por alguna razón llega vacío, lo mandamos a "SinClasificar" en lugar de RadioGenerica
+    let radioName = req.body.radio ? req.body.radio.trim() : "SinClasificar";
+    
+    // Ruta: public/audios/Nombre De La Radio/
+    const dir = path.join(__dirname, "public", "audios", radioName);
+    
+    // Crear la carpeta si no existe (recursive: true permite crear carpetas anidadas)
     fs.mkdirSync(dir, { recursive: true });
+    
     cb(null, dir);
   },
   filename: (req, file, cb) => {
-    // Nombre único para evitar conflictos
+    // Nombre único: MarcaDeTiempo-NombreOriginal (Reemplazamos espacios en el archivo por guiones bajos)
     const uniqueName = Date.now() + '-' + file.originalname.replace(/\s+/g, '_');
     cb(null, uniqueName);
   }
 });
+
 const upload = multer({ storage });
 
-// 2. Endpoint para SUBIR (Usado por el index.html y por el script automático)
+// 2. Endpoint para SUBIR (Recibe del Watcher)
 app.post("/upload", upload.single("audio"), (req, res) => {
-  if (!req.file) return res.status(400).json({ ok: false, error: "No file" });
+  if (!req.file) return res.status(400).json({ ok: false, error: "No se recibió archivo de audio" });
 
-  // Crear el objeto de metadatos
+  // Recuperamos el nombre de la radio una vez más para asegurar consistencia
+  const radioFinal = req.body.radio ? req.body.radio.trim() : "SinClasificar";
+
+  console.log(`📥 Recibiendo audio para: ${radioFinal} | Archivo: ${req.file.filename}`);
+
+  // ... dentro de app.post("/upload", ...)
+
+  // Crear el objeto de metadatos para db.json
   const newAudio = {
     id: Date.now().toString(),
-    name: req.body.name || req.file.originalname, // Nombre original
-    radio: req.body.radio || "Radio 1",
-    date: req.body.fecha || new Date().toISOString().split('T')[0], // YYYY-MM-DD
+    name: req.body.name || req.file.originalname, 
+    radio: radioFinal,
+    date: req.body.fecha || new Date().toISOString().split('T')[0], 
     start: req.body.start || "--:--",
     end: req.body.end || "--:--",
-    // Ruta web para que el HTML lo encuentre: /audios/RadioX/archivo.mp3
-    url: `/audios/${req.body.radio || "RadioGenerica"}/${req.file.filename}`
+
+    //encodeURIComponent para convertir espacios en %20
+    url: `/audios/${encodeURIComponent(radioFinal)}/${encodeURIComponent(req.file.filename)}`
   };
 
-  // Guardar en db.json
+  // Guardar en la "base de datos"
   saveToDB(newAudio);
+// ...
 
   res.json({ ok: true, data: newAudio });
 });
 
-// 3. Endpoint para OBTENER la lista (Esto lo pide el main.js al cargar)
+// 3. Endpoint para OBTENER la lista (Usado por el Frontend)
 app.get("/api/audios", (req, res) => {
   const audios = readDB();
   res.json(audios);
 });
 
-// ESTE VA AL FINAL (Servir archivos estáticos como css, js y los audios subidos)
+// 4. Servir archivos estáticos (Importante para que se escuchen los audios)
 app.use(express.static("public"));
 
+// INICIO
 app.listen(PORT, () => {
-  console.log(` Servidor listo en http://localhost:${PORT}`);
+  console.log(`🚀 Servidor MediaLogger activo en http://localhost:${PORT}`);
+  console.log(`   Esperando conexiones de 33 Radios...`);
 });
