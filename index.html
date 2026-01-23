@@ -1,18 +1,19 @@
 <!doctype html>
 <html lang="es">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MEDIALOGGER</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
 
+<body>
   <header class="top-bar">
     <div class="logo-area">
       <img src="imagenes/medialogggger.png" alt="MediaLogger Logo" class="logo-area"> 
-      <h2>MEDIALOGGER</h2>
-      </div>
+      <h1>MEDIALOGGER</h1>
+    </div>
     
     <div class="user-area">
       <span class="welcome-text">Hola,</span>
@@ -21,16 +22,14 @@
   </header>
 
   <div class="layout">
-    
-    <aside class="sidebar">
-      
+    <aside class="sidebar">    
       <div class="filter-section">
-        <label>FILTRAR POR FECHA</label>
+        <label>Filtrar audio por fecha</label>
         <input type="date" id="filter-date">
       </div>
 
       <div class="filter-section">
-        <label>SELECCIONAR RADIO</label>
+        <label>Seleccionar radio</label>
         <select id="radio-filter-select" class="radio-select">
           <option value="all">Todas las Radios</option>
           <option value="Radio Estacion">Radio Estacion</option>
@@ -69,14 +68,16 @@
         </select>
       </div>
 
+    <!-- TODO: BORRAR DESPUÉS DE MEJORAR DESPLIEGUE DE AUDIOS-->
       <div style="margin-top: 3rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
-           <button id="toggle-uploader" class="btn-ghost">⬆ Subir Manualmente</button>
+           <button id="toggle-uploader" class="btn-ghost">Subir audio Manualmente</button>
       </div>
-
       <div id="uploader-area" style="display:none; margin-top:10px;">
           <input id="file-input-u" type="file" accept="audio/*" multiple />
           <button id="save-manual" class="btn-primary">Guardar</button>
       </div>
+
+
     </aside>
 
     <section class="main-feed">
