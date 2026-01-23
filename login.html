@@ -1,31 +1,28 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Acceso a MediaLogger</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
-
 </head>
+
 <body class="login-page">
   <div class="login-container">
     <div class="user-icon-container">
-      <i class="fa-regular fa-user"></i>
+      <img src="imagenes/medialogggger.png" class="logo-area">
     </div>
     
-    <h2>Acceso a MediaLogger</h2>
+    <h2>Acceso a Medialogger</h2>
     
     <form id="loginForm">
       <div class="input-group">
-        <i class="fa-solid fa-envelope"></i>
         <input type="text" id="user" placeholder="Usuario" required>
       </div>
       <div class="input-group">
-        <i class="fa-solid fa-lock"></i>
         <input type="password" id="pass" placeholder="Contraseña" required>
       </div>
-      
       <button type="submit">ENTRAR</button>
       <div id="error"></div>
     </form>
@@ -51,5 +48,6 @@
       }
     });
   </script>
+  
 </body>
 </html>
