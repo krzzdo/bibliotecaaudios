@@ -1,17 +1,7 @@
-/* =========================================
-   VARIABLES GLOBALES
-   ========================================= */
-:root {
-  --bg: #0f1724;
-  --card: #0b1220;
-  --accent: #06b6d4;
-  --muted: #94a3b8;
-  --header-h: 70px;
-
+/* VARIABLES GLOBALES */
+:root {--bg: #0f1724;--card: #0b1220;--accent: #06b6d4;--muted: #94a3b8;--header-h: 70px;
   /* SOLO LOGIN */
-  --dark-blue: #042022;
-  --input-border: rgba(255, 255, 255, 0.3);
-}
+  --dark-blue: #042022;--input-border: rgba(255, 255, 255, 0.3);}
 
 /* =========================================
    RESET BÁSICO
@@ -89,15 +79,7 @@ body.login-page {
 /* Inputs con iconos */
 .input-group {
   position: relative;
-  margin-bottom: 1.5rem;
-}
-
-.input-group i {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--muted);
+  margin-bottom: 0.5rem;
 }
 
 body.login-page .input-group input {
@@ -178,7 +160,7 @@ body.login-page button:hover {
    DASHBOARD (HEADER + LAYOUT)
    ========================================= */
 .top-bar {
-  height: var(--header-h);
+  height: 80px;
   background: rgba(11, 18, 32, 0.95);
   border-bottom: 1px solid rgba(255,255,255,0.08);
   display: flex;
@@ -191,7 +173,7 @@ body.login-page button:hover {
 }
 
 .logo-area {
-  height: 100%;
+  height: 50px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -203,9 +185,9 @@ body.login-page button:hover {
   width: auto;
 }
 
-.logo-area h2 {
+.logo-area h1 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.9rem;
   color: #fff;
   font-weight: 700;
 }
@@ -218,7 +200,7 @@ body.login-page button:hover {
 .username-highlight {
   color: var(--accent);
   font-weight: bold;
-  margin-left: 5px;
+  margin-left: 0.2px;
 }
 
 /* Layout principal */
@@ -235,6 +217,14 @@ body.login-page button:hover {
   border-right: 1px solid rgba(255,255,255,0.06);
   padding: 1.5rem;
   overflow-y: auto;
+}
+
+.radio-select {
+  background: #f0f0f0;
+  border: 2px solid #071025;
+  border-radius: 5px;
+  color: #333;
+  cursor: pointer;
 }
 
 /* Feed */
