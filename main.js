@@ -1,34 +1,27 @@
-// main.js - VERSIÓN CORRECTA PARA DROPDOWN Y BARRA SUPERIOR
-
-// --- 1. CONFIGURACIÓN DE USUARIO (Esto arregla el nombre arriba) ---
 const params = new URLSearchParams(window.location.search);
 const user = params.get("user");
 const headerUsername = document.getElementById("header-username");
 
-// Si hay usuario en la URL, lo ponemos en el título y en la barra
 if (user) {
     document.title = `MediaLogger - ${user}`;
     if (headerUsername) headerUsername.textContent = user;
-} else {
-    // Si no hay usuario, redirigir al login (opcional)
-    window.location.href = "/";
 }
 
-// --- 2. CONFIGURACIÓN DE ESTADO ---
-let audios = []; 
-let filterRadio = 'all'; 
+let audios = [];
+let filterRadio = 'all';
 let filterDate = null;   
 
-// --- 3. REFERENCIAS DEL HTML (Elementos nuevos) ---
 const feedContainer = document.getElementById('feed-container');
 const dateInput = document.getElementById('filter-date');
 const radioSelect = document.getElementById('radio-filter-select'); // El menú de las 33 radios
 
-// Uploader manual
+// Uploader manual TODO: BORRAR DESPUÉS DE MEJORAR DESPLIEGUE DE AUDIOS.
 const uploaderArea = document.getElementById('uploader-area');
 const toggleUploaderBtn = document.getElementById('toggle-uploader');
 const fileInput = document.getElementById('file-input-u');
 const saveManualBtn = document.getElementById('save-manual');
+
+// REVISAR DE AQUÍ PARA ABAJO, HASTA ACÁ QUEDÉ EL 23 DE ENERO A LAS 19:49
 
 // --- 4. CARGAR DATOS DEL SERVIDOR ---
 async function loadAudios() {
